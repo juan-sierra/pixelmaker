@@ -1,48 +1,48 @@
-function makeGrid() {
-  let inputHeight = document.getElementById("input_height");
-  let inputWidth = document.getElementById("input_width");
+let inputHeight = $("#input_height");
+let inputWidth = $("#input_width");
+let colorPicker = $("#colorPicker");
 
-  let canvas = document.getElementById("pixel_canvas");
+let canvas = $("#pixel_canvas");
 
-  let height, width;
+let sizePicker = $("#sizePicker");
 
-  function sizePicker() {
-    window.onsubmit = saveSize;
-  }
+let height, width, color;
 
-  function saveSize() {
-    sessionStorage.setItem("height", inputHeight.value);
-    sessionStorage.setItem("width", inputWidth.value);
-  }
+$(sizePicker).submit(function() {
+  makeGrid(inputHeight, inputWidth);
+});
 
-  function retrive() {
-    height = sessionStorage.getItem("height");
-    width = sessionStorage.getItem("width");
+function makeGrid(h, w) {
+  h = h.val();
+  w = w.val();
+  // save to browser session storage
+  // data will be delete upon closing window
+  // will remain in storage if page is reloaded
+  sessionStorage.setItem("height", h);
+  sessionStorage.setItem("width", w);
+}
 
-    inputHeight.value = height;
-    inputWidth.value = width;
+$(colorPicker).change(function() {
+  sessionStorage.setItem("color", colorPicker.val());
+});
 
-    let tableRow = document.createElement("tr");
-    let tableData = document.createElement("td");
+function retrive() {
+  height = sessionStorage.getItem("height");
+  width = sessionStorage.getItem("width");
 
-    let dataArr = [];
+  color = sessionStorage.getItem("color");
 
-    for (let x = 0; x < height; x++) {
-      // console.log(tableRow);
-      if (tableData.innerHTML == "") {
-        for (let y = 0; y < width; y++) {
-          tableData.innerHTML = "X";
-          dataArr.push(tableData);
-        }
-        dataArr.forEach(d => {
-          d += width;
-          console.log(d);
-        });
-      }
+  for (let x = 0; x < height; x++) {
+    let tRow = $("<tr></tr>");
+    canvas.append(tRow);
+    for (let y = 0; y < width; y++) {
+      let tData = $("<td></td>");
+      tRow.append(
+        tData.click(function() {
+          $(tData).css("background-color", color);
+        })
+      );
     }
   }
-  retrive();
-
-  window.addEventListener("click", sizePicker, false);
 }
-window.addEventListener("load", makeGrid, false);
+retrive();
