@@ -1,48 +1,58 @@
-let inputHeight = $("#input_height");
-let inputWidth = $("#input_width");
-let colorPicker = $("#colorPicker");
+let inputHeight = document.getElementById("input_height");
+let inputWidth = document.getElementById("input_width");
+let colorPicker = document.getElementById("colorPicker");
 
-let canvas = $("#pixel_canvas");
+let canvas = document.getElementById("pixel_canvas");
 
-let sizePicker = $("#sizePicker");
+function makeGrid() {
+  function sizePicker() {
+    window.onsubmit = saveSettings;
+  }
 
-let height, width, color;
+  function saveSettings() {
+    sessionStorage.setItem("height", inputHeight.value);
+    sessionStorage.setItem("width", inputWidth.value);
+  }
 
-$(sizePicker).submit(function() {
-  makeGrid(inputHeight, inputWidth);
-});
+  function colorProp() {
+    window.onchange = saveColor;
+  }
 
-function makeGrid(h, w) {
-  h = h.val();
-  w = w.val();
-  // save to browser session storage
-  // data will be delete upon closing window
-  // will remain in storage if page is reloaded
-  sessionStorage.setItem("height", h);
-  sessionStorage.setItem("width", w);
-}
+  function saveColor() {
+    sessionStorage.setItem("color", colorPicker.value);
+    window.location.reload(true);
+  }
 
-$(colorPicker).change(function() {
-  sessionStorage.setItem("color", colorPicker.val());
-});
+  window.addEventListener("input", colorProp, false);
 
-function retrive() {
-  height = sessionStorage.getItem("height");
-  width = sessionStorage.getItem("width");
+  function retrive() {
+    let height, width, color;
 
-  color = sessionStorage.getItem("color");
+    height = sessionStorage.getItem("height");
+    width = sessionStorage.getItem("width");
+    color = sessionStorage.getItem("color");
 
-  for (let x = 0; x < height; x++) {
-    let tRow = $("<tr></tr>");
-    canvas.append(tRow);
-    for (let y = 0; y < width; y++) {
-      let tData = $("<td></td>");
-      tRow.append(
-        tData.click(function() {
-          $(tData).css("background-color", color);
-        })
-      );
+    inputHeight.value = height;
+    inputWidth.value = width;
+    colorPicker.value = color;
+
+    for (let x = 0; x < height; x++) {
+      let tRow = document.createElement("tr");
+      canvas.appendChild(tRow);
+      for (let y = 0; y < width; y++) {
+        let tData = document.createElement("td");
+
+        tRow.appendChild(tData);
+        tData.addEventListener("click", el => {
+          tData.style = `background-color: ${color}`;
+          console.log(tData);
+        });
+      }
     }
   }
+  retrive();
+
+  window.addEventListener("click", sizePicker, false);
 }
-retrive();
+
+window.addEventListener("load", makeGrid, false);
