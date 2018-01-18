@@ -1,6 +1,8 @@
 let inputHeight = document.getElementById("input_height");
 let inputWidth = document.getElementById("input_width");
-let colorPicker = document.getElementById("colorPicker");
+let cp = document.getElementById("colorPicker");
+
+let height, width, color;
 
 let canvas = document.getElementById("pixel_canvas");
 
@@ -14,27 +16,21 @@ function makeGrid() {
     sessionStorage.setItem("width", inputWidth.value);
   }
 
-  function colorProp() {
-    window.onchange = saveColor;
-  }
-
-  function saveColor() {
-    sessionStorage.setItem("color", colorPicker.value);
-    window.location.reload(true);
-  }
-
-  window.addEventListener("input", colorProp, false);
+  cp.addEventListener(
+    "input",
+    function() {
+      color = cp.value;
+      console.log(color);
+    },
+    false
+  );
 
   function retrive() {
-    let height, width, color;
-
     height = sessionStorage.getItem("height");
     width = sessionStorage.getItem("width");
-    color = sessionStorage.getItem("color");
 
     inputHeight.value = height;
     inputWidth.value = width;
-    colorPicker.value = color;
 
     for (let x = 0; x < height; x++) {
       let tRow = document.createElement("tr");
